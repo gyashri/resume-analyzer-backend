@@ -93,20 +93,6 @@ app.use('/api/resumes', resumeRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Temporary one-time admin promotion endpoint (remove after use)
-app.post('/api/promote-admin', async (req, res) => {
-  const { email, secret } = req.body;
-  if (secret !== process.env.JWT_SECRET) {
-    return res.status(403).json({ success: false, message: 'Forbidden' });
-  }
-  const User = require('./models/User');
-  const user = await User.findOne({ email });
-  if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-  user.role = 'admin';
-  await user.save();
-  res.json({ success: true, message: `${user.name} (${user.email}) promoted to admin` });
-});
-
 /**
  * ROOT ROUTE
  * Health check endpoint
